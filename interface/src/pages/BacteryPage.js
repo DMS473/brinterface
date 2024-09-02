@@ -66,28 +66,68 @@ const BacteryPage = () => {
   return (
     <div className='p-3'>
       <h1>{bactery.nama}</h1>
-
-      <h3>Name and taxonomic classification</h3>
+      <br></br>
+      <h4>Name and taxonomic classification</h4>
       <pre>
-        Domain:    {bactery.domain}
+        <strong>Last LPSN update</strong>              {bactery.last_update} (DD-MM-YYYY)
+      </pre>
+      <pre>
+      <strong>Domain</strong>                        {bactery.domain}
       </pre>
       <div className='penamaan2'>
-        <pre style={{ "margin-top": "-10px !important"}}>
-          Phylum     {bactery.phylum}
+        <pre style={{ "margin-top": "-10px !important" }}>
+        <strong>Phylum</strong>                        {bactery.phylum}
         </pre>
       </div>
       <pre>
-        Class      {bactery.class}
+      <strong>Class</strong>                         {bactery.class}
       </pre>
       <pre>
-        Order      {bactery.order}
+      <strong>Order</strong>                         {bactery.order}
       </pre>
       <pre>
-        Genus      {bactery.genus}
+      <strong>Family</strong>                        {bactery.family}
       </pre>
       <pre>
-        Species    {bactery.species}
+      <strong>Genus</strong>                         {bactery.genus}
       </pre>
+      <pre>
+      <strong>Species</strong>                       {bactery.species}
+      </pre>
+      <pre>
+      <strong>Full Scientific Name (LPSN)</strong>   {bactery.lpsn}
+      </pre>
+      {bactery.synonym && (
+        <pre>
+          <strong>Synonym</strong>                       {bactery.synonym}
+        </pre>
+      )}
+
+      <br></br>
+      {bactery.morphology && (
+        <div>
+          <h4>Morphology</h4>
+          <pre>
+          <strong>Gram stain</strong>                    {bactery.morphology.gram_stain1}
+          </pre>
+          <pre>
+          <strong>Gram stain</strong>                    {bactery.morphology.gram_stain2} <strong>Confidence in %</strong> {bactery.morphology.confidence}
+          </pre>
+          <pre>
+          <strong>Cell shape</strong>                    {bactery.morphology.cell_shape}
+          </pre>
+          <pre>
+          <strong>Motility</strong>                      {bactery.morphology.motility}
+          </pre>
+          <pre>
+          <strong>Incubation period</strong>             {bactery.morphology.incubation_period1}
+          </pre>
+          <pre>
+          <strong>Incubation period</strong>             {bactery.morphology.incubation_period2}
+          </pre>
+        </div>
+      )}
+
 
     </div>
   );
