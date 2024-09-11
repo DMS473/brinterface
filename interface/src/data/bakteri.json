@@ -46,7 +46,7 @@
         "lpsn": "Chelatococcus thermostellatus Ibrahim et al. 2016"
     },
     {
-        "nama": "Aeromonas hydrophila",
+        "nama": "Cobetia marina",
         "last_update": "14-12-2023",
         "domain": "Bacteria",
         "phylum": "Pseudomonadota",
@@ -59,7 +59,20 @@
         "synonym": "Bacillus hydrophilus"
     },
     {
-        "nama": "Aeromonas hydrophila",
+        "nama": "Dactylosporangium aurantiacum",
+        "last_update": "14-12-2023",
+        "domain": "Bacteria",
+        "phylum": "Pseudomonadota",
+        "class": "Gammaproteobacteria",
+        "order": "Aeromonadales",
+        "family": "Aeromonadaceae",
+        "genus": "Aeromonas",
+        "species": "Aeromonas hydrophila",
+        "lpsn": "Aeromonas hydrophila (Chester 1901) Stanier 1943 (Approved Lists 1980)",
+        "synonym": "Bacillus hydrophilus"
+    },
+    {
+        "nama": "Empedobacter tilapiae",
         "last_update": "14-12-2023",
         "domain": "Bacteria",
         "phylum": "Pseudomonadota",
@@ -71,4 +84,8 @@
         "lpsn": "Aeromonas hydrophila (Chester 1901) Stanier 1943 (Approved Lists 1980)",
         "synonym": "Bacillus hydrophilus"
     }
+     
+ 	 
+              
+
 ]
