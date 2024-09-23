@@ -1,12 +1,31 @@
-import React, { useState } from "react";
-import data from '../data/bakteri.json'
+import React, { useState, useEffect } from 'react';
+// import data from '../data/bakteri.json'
 import bacteria1Data from '../data/bakteri.json'
 import { Link } from 'react-router-dom'
 import { Table, Form, Container } from "react-bootstrap";
+import { getMyBookings } from '../services/api';
 
 const Bacdive = () => {
 
-  const bacteriaData = bacteria1Data
+  // const bacteriaData = bacteria1Data
+
+  const [dataBacteries, setDataBacteries] = useState([]);
+
+  useEffect(() => {
+    const fetchBookings = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        const response = await getMyBookings(token)
+        setDataBacteries(response.data);
+        console.log(response.data);
+        // console.log(`data` + dataBacteries);
+      } catch (error) {
+        console.error('Failed to fetch bookings:', error);
+      }
+    };
+
+    fetchBookings();
+  }, []);
 
 
   // const bacteriaData = [
@@ -40,12 +59,24 @@ const Bacdive = () => {
   // Function to handle search and filter the data
   const handleSearch = (event) => {
     setSearchTerm(event.target.value.toLowerCase());
+    console.log(uniqueSpecies)
   };
 
+  const uniqueSpecies = dataBacteries.reduce((acc, current) => {
+    const x = acc.find(item => item.species === current.species);
+    if (!x) {
+      return acc.concat([current]);
+    } else {
+      return acc;
+    }
+  }, []);
+
   // Filter the bacteria data based on the search term
-  const filteredBacteria = bacteriaData.filter((bacterium) =>
-    bacterium.nama.toLowerCase().includes(searchTerm)
+  const filteredBacteria = uniqueSpecies.filter((bacterium) =>
+    bacterium.species.toLowerCase().includes(searchTerm)
   );
+
+
 
 
   return (
@@ -63,21 +94,21 @@ const Bacdive = () => {
         <thead>
           <tr>
             <th>Name</th>
-            <th>Domain</th>
+            {/* <th>Domain</th>
             <th>Phylum</th>
             <th>Class</th>
-            <th>Last Updated</th>
+            <th>Last Updated</th> */}
           </tr>
         </thead>
         <tbody>
           {filteredBacteria.length > 0 ? (
             filteredBacteria.map((bacterium, index) => (
               <tr key={index}>
-                <td><Link to={`/bacdive/${bacterium.nama}`}>{bacterium.nama}</Link></td>
-                <td>{bacterium.domain}</td>
+                <td><Link to={`/bacdive/${bacterium.species}`}>{bacterium.species}</Link></td>
+                {/* <td>{bacterium.domain}</td>
                 <td>{bacterium.phylum}</td>
                 <td>{bacterium.class}</td>
-                <td>{bacterium.last_update}</td>
+                <td>{bacterium.last_update}</td> */}
               </tr>
             ))
           ) : (

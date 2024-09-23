@@ -1,15 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { Link } from 'react-router-dom'
-import data from '../data/bakteri.json'
 import { Button, Collapse } from 'react-bootstrap';
-// import categories from '../../data/ontologi_konsep.json';
-// import tes2 from '../../data/images/ontologi/masjid.png';
-// import CategoryList2 from './CategoryList2';
-// import HierarchyNavigation from './HierarcyNavigation';
+import { getUser } from '../services/api';
 
 const BacteryPage = () => {
   const { bacteryName } = useParams();
+  const [isLoading, setIsLoading] = useState(true); 
+
   const [open, setOpen] = useState(true);
   const [taxonomyOpen, setTaxonomyOpen] = useState(true);
   const [cultureOpen, setCultureOpen] = useState(true);
@@ -21,66 +19,37 @@ const BacteryPage = () => {
   const [externalOpen, setExternalOpen] = useState(true);
   const [referenceOpen, setReferenceOpen] = useState(true);
 
-  
-  // Fungsi rekursif untuk mencari kategori dalam struktur hierarki
-  const findCategory = (categories, name) => {
-    for (let category of categories) {
-      if (category.nama === name) {
-        return category;
+  const [dataBactery, setDataBactery] = useState([]);
+
+  useEffect(() => {
+    const fetchBookings = async () => {
+      try {
+        // const token = localStorage.getItem('token');
+        const response = await getUser(bacteryName)
+        setDataBactery(response);
+        console.log(response);
+        // console.log(dataBactery);
+      } catch (error) {
+        console.error('Failed to fetch bookings:', error);
+      } finally {
+        setIsLoading(false); // Setelah data selesai diambil atau ada error
       }
-      //   if (category.subkategori.length > 0) {
-      //     const found = findCategory(category.subkategori, name);
-      //     if (found) {
-      //       return found;
-      //     }
-      //   }
-      //   if (category.related_konsep.length > 0) {
-      //     const found = findCategory(category.related_konsep, name);
-      //     if (found) {
-      //       return found;
-      //     }
-      //   }
-    }
-    return null;
-  };
+    };
 
-  //   function findCategoryPath(data, targetCategory) {
-  //     for (let item of data) {
-  //       if (item.nama === targetCategory) {
-  //         return [item];
-  //       }
-  //       if (item.subkategori.length > 0) {
-  //         const path = findCategoryPath(item.subkategori, targetCategory);
-  //         if (path.length) {
-  //           return [item, ...path];
-  //         }
-  //       }
-  //     }
-  //     return [];
-  //   }
-
-  // Cari kategori berdasarkan nama
-  const bactery = findCategory(data, bacteryName);
-
-  //   if (!category) {
-  //     return <h1>Category not found</h1>;
-  //   }
-
-  //   const TranslationText = ({ translation }) => {
-  //     return (
-  //       <p dangerouslySetInnerHTML={{ __html: translation }} />
-  //     );
-  //   };
-
-  //   const translation = "Allah telah menjadikan <strong>Ka‘bah</strong>, rumah suci itu sebagai pusat kegiatan (peribadatan dan urusan dunia) bagi manusia, dan (demikian pula) bulan haram, hadyu (hewan kurban) dan qalā’id (hewan kurban yang diberi kalung). Yang demikian itu agar kamu mengetahui bahwa sesungguhnya Allah mengetahui apa pun yang ada di langit dan apa pun yang ada di bumi dan bahwa Allah Maha Mengetahui segala sesuatu.";
+    fetchBookings();
+  }, []);
 
 
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  
   return (
     <div className='p-3'>
-      <h1>{bactery.nama}</h1>
+      <h1>{dataBactery.species}</h1>
       <br></br>
 
-      {/* <h4>Name and taxonomic classification</h4> */}
       <Button
         onClick={() => setTaxonomyOpen(!taxonomyOpen)}
         aria-controls="taxonomy-content"
@@ -91,40 +60,40 @@ const BacteryPage = () => {
       </Button>
       <Collapse in={taxonomyOpen}>
         <div id="taxonomy-content">
-          <pre>
+          {/* <pre>
             <strong>Last LPSN update</strong>              {bactery.last_update} (DD-MM-YYYY)
-          </pre>
+          </pre> */}
           <pre>
-            <strong>Domain</strong>                        {bactery.domain}
+            <strong>Domain</strong>                        {dataBactery.kingdom}
           </pre>
           <div className='penamaan2'>
-            <pre style={{ "margin-top": "-10px !important" }}>
-              <strong>Phylum</strong>                        {bactery.phylum}
+            <pre style={{ "marginTop": "-10px !important" }}>
+              <strong>Phylum</strong>                        {dataBactery.phylum}
             </pre>
           </div>
           <pre>
-            <strong>Class</strong>                         {bactery.class}
+            <strong>Class</strong>                         {dataBactery.class}
           </pre>
           <pre>
-            <strong>Order</strong>                         {bactery.order}
+            <strong>Order</strong>                         {dataBactery.order}
           </pre>
           <pre>
-            <strong>Family</strong>                        {bactery.family}
+            <strong>Family</strong>                        {dataBactery.family}
           </pre>
           <pre>
-            <strong>Genus</strong>                         {bactery.genus}
+            <strong>Genus</strong>                         {dataBactery.genus}
           </pre>
           <pre>
-            <strong>Species</strong>                       {bactery.species}
+            <strong>Species</strong>                       {dataBactery.species}
           </pre>
           <pre>
-            <strong>Full Scientific Name (LPSN)</strong>   {bactery.lpsn}
+            <strong>Full Scientific Name (LPSN)</strong>   {dataBactery.scientificName}
           </pre>
-          {bactery.synonym && (
+          {/* {bactery.synonym && (
             <pre>
               <strong>Synonym</strong>                       {bactery.synonym}
             </pre>
-          )}
+          )} */}
         </div>
       </Collapse>
 
@@ -132,28 +101,9 @@ const BacteryPage = () => {
 
       <br></br>
       {/* bagian morphology */}
-      {bactery.morphology && (
+      {/* {bactery.morphology && (
         <div>
-          {/* <h4>Morphology</h4>
-          <pre>
-          <strong>Gram stain</strong>                    {bactery.morphology.gram_stain1}
-          </pre>
-          <pre>
-          <strong>Gram stain</strong>                    {bactery.morphology.gram_stain2} <strong>Confidence in %</strong> {bactery.morphology.confidence}
-          </pre>
-          <pre>
-          <strong>Cell shape</strong>                    {bactery.morphology.cell_shape}
-          </pre>
-          <pre>
-          <strong>Motility</strong>                      {bactery.morphology.motility}
-          </pre>
-          <pre>
-          <strong>Incubation period</strong>             {bactery.morphology.incubation_period1}
-          </pre>
-          <pre>
-          <strong>Incubation period</strong>             {bactery.morphology.incubation_period2}
-          </pre> */}
-
+          
           <Button
             onClick={() => setOpen(!open)}
             aria-controls="morphology-content"
@@ -186,13 +136,13 @@ const BacteryPage = () => {
             </div>
           </Collapse>
         </div>
-      )}
+      )} */}
 
 
       {/* part3 */}
       {/* <h4>Name and taxonomic classification</h4> */}
       {/* <br></br> */}
-      <Button
+      {/* <Button
         onClick={() => setCultureOpen(!cultureOpen)}
         aria-controls="culture-content"
         aria-expanded={setCultureOpen}
@@ -237,13 +187,13 @@ const BacteryPage = () => {
             </pre>
           )}
         </div>
-      </Collapse>
+      </Collapse> */}
 
 
       {/* part4 */}
       {/* <h4>Name and taxonomic classification</h4> */}
       <br></br>
-      <Button
+      {/* <Button
         onClick={() => setPhysioOpen(!physioOpen)}
         aria-controls="physio-content"
         aria-expanded={setPhysioOpen}
@@ -288,12 +238,12 @@ const BacteryPage = () => {
             </pre>
           )}
         </div>
-      </Collapse>
+      </Collapse> */}
 
       {/* part5 */}
       {/* <h4>Name and taxonomic classification</h4> */}
       <br></br>
-      <Button
+      {/* <Button
         onClick={() => setIsolationOpen(!isolationOpen)}
         aria-controls="isolation-content"
         aria-expanded={setIsolationOpen}
@@ -338,13 +288,13 @@ const BacteryPage = () => {
             </pre>
           )}
         </div>
-      </Collapse>
+      </Collapse> */}
 
 
       {/* part6 */}
       {/* <h4>Name and taxonomic classification</h4> */}
       <br></br>
-      <Button
+      {/* <Button
         onClick={() => setSafetyOpen(!safetyOpen)}
         aria-controls="safety-content"
         aria-expanded={setSafetyOpen}
@@ -389,13 +339,13 @@ const BacteryPage = () => {
             </pre>
           )}
         </div>
-      </Collapse>
+      </Collapse> */}
 
 
       {/* part7 */}
       {/* <h4>Name and taxonomic classification</h4> */}
       <br></br>
-      <Button
+      {/* <Button
         onClick={() => setSequenceOpen(!sequenceOpen)}
         aria-controls="sequence-content"
         aria-expanded={setSequenceOpen}
@@ -440,13 +390,13 @@ const BacteryPage = () => {
             </pre>
           )}
         </div>
-      </Collapse>
+      </Collapse> */}
 
 
       {/* part8 */}
       {/* <h4>Name and taxonomic classification</h4> */}
       <br></br>
-      <Button
+      {/* <Button
         onClick={() => setGenomeOpen(!genomeOpen)}
         aria-controls="genome-content"
         aria-expanded={setGenomeOpen}
@@ -491,13 +441,13 @@ const BacteryPage = () => {
             </pre>
           )}
         </div>
-      </Collapse>
+      </Collapse> */}
 
 
       {/* part9 */}
       {/* <h4>Name and taxonomic classification</h4> */}
       <br></br>
-      <Button
+      {/* <Button
         onClick={() => setExternalOpen(!externalOpen)}
         aria-controls="external-content"
         aria-expanded={setExternalOpen}
@@ -542,13 +492,13 @@ const BacteryPage = () => {
             </pre>
           )}
         </div>
-      </Collapse>
+      </Collapse> */}
 
 
       {/* part10 */}
       {/* <h4>Name and taxonomic classification</h4> */}
       <br></br>
-      <Button
+      {/* <Button
         onClick={() => setReferenceOpen(!referenceOpen)}
         aria-controls="reference-content"
         aria-expanded={setReferenceOpen}
@@ -593,7 +543,7 @@ const BacteryPage = () => {
             </pre>
           )}
         </div>
-      </Collapse>
+      </Collapse> */}
 
 
     </div>
